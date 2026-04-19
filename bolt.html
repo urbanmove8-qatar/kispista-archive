@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8" />
+    <title>Kispistás Sörgyár Kft. - Bolt</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        h1 {
+            color: #2c3e50;
+        }
+        .product {
+            border: 1px solid #ccc;
+            background: #fff;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        .product h2 {
+            margin-top: 0;
+        }
+        label {
+            display: inline-block;
+            margin-top: 8px;
+        }
+        select {
+            margin-left: 8px;
+            padding: 4px;
+        }
+        button {
+            padding: 8px 12px;
+            margin-top: 10px;
+            background: #27ae60;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        #cart {
+            background: #fff;
+            padding: 15px;
+            border: 2px solid #3498db;
+            margin-top: 20px;
+        }
+        #cart-items {
+            list-style-type: none;
+            padding-left: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Kispistás Sörgyár Kft. Webshop</h1>
+
+    <div class="product">
+        <h2>Classic Sör (0.5% alkohol)</h2>
+        <p>Ár: 299 Forint / doboz</p>
+        <label>Pack méret (dobozok száma): 
+            <select id="classic-qty">
+                <option value="1">1 pack (10 doboz)</option>
+                <option value="2">2 pack (20 doboz)</option>
+                <option value="3">3 pack (30 doboz)</option>
+                <option value="4">4 pack (40 doboz)</option>
+                <option value="5">5 pack (50 doboz)</option>
+                <option value="6">6 pack (60 doboz)</option>
+                <option value="7">7 pack (70 doboz)</option>
+                <option value="8">8 pack (80 doboz)</option>
+                <option value="9">9 pack (90 doboz)</option>
+                <option value="10">10 pack (100 doboz)</option>
+            </select>
+        </label>
+        <br />
+        <button onclick="addToCart('Classic (0.5% alkohol)', 299, 'classic-qty')">Kosárba rakás</button>
+    </div>
+
+    <div class="product">
+        <h2>Citromos Sör (alkoholmentes)</h2>
+        <p>Ár: 279 Forint / doboz</p>
+        <label>Pack méret (dobozok száma): 
+            <select id="lemon-alcoholfree-qty">
+                <option value="1">1 pack (10 doboz)</option>
+                <option value="2">2 pack (20 doboz)</option>
+                <option value="3">3 pack (30 doboz)</option>
+                <option value="4">4 pack (40 doboz)</option>
+                <option value="5">5 pack (50 doboz)</option>
+                <option value="6">6 pack (60 doboz)</option>
+                <option value="7">7 pack (70 doboz)</option>
+                <option value="8">8 pack (80 doboz)</option>
+                <option value="9">9 pack (90 doboz)</option>
+                <option value="10">10 pack (100 doboz)</option>
+            </select>
+        </label>
+        <br />
+        <button onclick="addToCart('Lemon (alkoholmentes)', 279, 'lemon-alcoholfree-qty')">Kosárba rakás</button>
+    </div>
+
+    <div class="product">
+        <h2>Epres Sör (0.0% alkohol)</h2>
+        <p>Ár: 289 Forint / doboz</p>
+        <label>Pack méret (dobozok száma): 
+            <select id="epres-alcoholfree-qty">
+                <option value="1">1 pack (10 doboz)</option>
+                <option value="2">2 pack (20 doboz)</option>
+                <option value="3">3 pack (30 doboz)</option>
+                <option value="4">4 pack (40 doboz)</option>
+                <option value="5">5 pack (50 doboz)</option>
+                <option value="6">6 pack (60 doboz)</option>
+                <option value="7">7 pack (70 doboz)</option>
+                <option value="8">8 pack (80 doboz)</option>
+                <option value="9">9 pack (90 doboz)</option>
+                <option value="10">10 pack (100 doboz)</option>
+            </select>
+        </label>
+        <br />
+        <button onclick="addToCart('Epres (0.0% alkohol)', 289, 'epres-alcoholfree-qty')">Kosárba rakás</button>
+    </div>
+
+    <div id="cart">
+        <h2>Kosár</h2>
+        <ul id="cart-items"></ul>
+        <p><strong>Összesen:</strong> <span id="total">0</span> Forint</p>
+        <button onclick="checkout()">Fizetés</button>
+    </div>
+
+    <script>
+        let cart = [];
+        let total = 0;
+
+        // name = product name, price = price per can, qtyId = select element id to get quantity of packs
+        function addToCart(name, price, qtyId) {
+            const qtySelect = document.getElementById(qtyId);
+            let packCount = parseInt(qtySelect.value); // packs (1 pack = 10 cans)
+            let cansCount = packCount * 10;
+            let itemPrice = price * cansCount;
+
+            // Add to cart as one entry: name + pack count + total price
+            cart.push({ 
+                name: `${name} - ${packCount} pack${packCount > 1 ? 's' : ''} (${cansCount} doboz)`, 
+                price: itemPrice 
+            });
+            total += itemPrice;
+            updateCart();
+        }
+
+        function updateCart() {
+            const cartList = document.getElementById('cart-items');
+            cartList.innerHTML = '';
+            cart.forEach((item, index) => {
+                const li = document.createElement('li');
+                li.textContent = `${item.name} - ${item.price} Forint`;
+                cartList.appendChild(li);
+            });
+            document.getElementById('total').textContent = total;
+        }
+
+        function checkout() {
+            if (cart.length === 0) {
+                alert("A kosár üres!");
+                return;
+            }
+            alert(`Sikeres fizetés! Összeg: ${total} Forint\nKöszönjük a vásárlást!`);
+            cart = [];
+            total = 0;
+            updateCart();
+        }
+    </script>
+
+</body>
+</html>
